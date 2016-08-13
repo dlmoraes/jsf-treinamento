@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Avalições</ui:define>
+
+	<f:metadata>
+		<o:viewParam name="id_lot" value="#{listagemMatriculasBean.id_lot}" />
+		<o:viewParam name="id_tre" value="#{listagemMatriculasBean.id_tre}" />
+		<f:viewAction action="#{listagemMatriculasBean.inicializar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<p:messages autoUpdate="true" closable="true" />
+		<div class="Container100 Responsive100 NoIndent Flex FlexWrap">
+			<div class="Container100 Responsive100 Flex">
+				<div class="Container100">
+					<div class="Card">
+						<div class="CardTopic TexAlCenter">
+							<span class="fa fa-fw fa-table"></span> Avaliações
+						</div>
+						<div class="SeparatorFull"></div>
+						<h:form id="frmPesquisa">
+							<p:toolbar styleClass="toolbar-sis">
+								<p:toolbarGroup>
+									<p:commandButton value="Pesquisar" icon="fa fa-search" />
+								</p:toolbarGroup>
+								<p:toolbarGroup align="right">
+									<p:button icon="fa fa-fw fa-plus" value="Novo" title="Avaliar" />
+								</p:toolbarGroup>
+							</p:toolbar>
+							<p:panel header="Dados do treinamento" toggleable="true">
+								<p:panelGrid id="panelDadosTreinamento" columns="2"
+									layout="grid" styleClass="ui-panelgrid-blank"
+									columnClasses="ui-grid-col-2, ui-grid-col-10">
+									<p:outputLabel value="Treinamento" />
+									<p:outputLabel
+										value="#{listagemMatriculasBean.treinamentoSelecionado.titulo}" />
+									<p:outputLabel value="Tipo" />
+									<p:outputLabel
+										value="#{listagemMatriculasBean.treinamentoSelecionado.tipoTreinamento.descricao}" />
+									<p:outputLabel value="Iniciado em" />
+									<p:outputLabel
+										value="#{listagemMatriculasBean.treinamentoSelecionado.dtaInicio}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</p:outputLabel>
+								</p:panelGrid>
+							</p:panel>
+							<p:dataTable id="avaliacaoTable"
+								value="#{listagemMatriculasBean.lista}" var="matricula"
+								emptyMessage="Nenhuma avaliação encontrada."
+								style="margin-top: 10px;" rows="10"
+								paginatorAlwaysVisible="false" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								reflow="true">
+
+								<p:column headerText="Login">
+									<p:outputLabel value="#{matricula.atendente.matricula}" />
+								</p:column>
+
+								<p:column headerText="Atendente">
+									<p:outputLabel value="#{matricula.atendente.nome}" />
+								</p:column>
+								
+								<p:column headerText="Resultado">
+									<p:outputLabel value="#{matricula.resultado.descricao}" />
+								</p:column>
+								
+								<p:column>
+									<p:button id="btnAvaliar" icon="fa fa-tag" title="Avaliar aluno" 
+									outcome="/avaliacoes/CadastroAvaliacao" rendered="#{matricula.resultado.ordinal() == 1 || matricula.resultado.ordinal() == 3}">
+										<f:param name="id_mat" value="#{matricula.id}" />
+										<f:param name="id_tre" value="#{listagemMatriculasBean.id_tre}" />
+										<f:param name="id_lot" value="#{listagemMatriculasBean.id_lot}" />
+									</p:button>
+									<p:tooltip for="btnAvaliar" showEffect="fade" hideEffect="fade" />
+									<p:media value="faces/media/1467399651832.pdf" width="400" height="500"></p:media>
+								</p:column>
+
+							</p:dataTable>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

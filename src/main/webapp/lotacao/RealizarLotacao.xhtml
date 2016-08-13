@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Realizar lotação</ui:define>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="frm">
+			<f:metadata>
+				<o:viewParam name="id" value="#{RealizarLotacaoMB.lotacao}" />
+				<f:viewAction action="#{RealizarLotacaoMB.inicializar}"
+					type="preRenderView" />
+			</f:metadata>
+			<p:growl autoUpdate="true" closable="true" />
+
+			<ui:include src="/WEB-INF/template/lotacao/BotoesLotacao.xhtml" />
+
+			<div class="Card">
+				<div class="CardTopic">Realizar lotação</div>
+				<div class="SeparatorFull"></div>
+				<div class="Container100 Responsive100">
+					<ui:include src="/WEB-INF/template/lotacao/CapaLotacao.xhtml" />
+					
+					<br/>
+					
+					<ui:include src="/WEB-INF/template/lotacao/TreinamentosDisponiveis.xhtml" />
+					
+					<div class="SeparatorFull"></div>
+					
+					<ui:include src="/WEB-INF/template/lotacao/Matriculas.xhtml" />
+					
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

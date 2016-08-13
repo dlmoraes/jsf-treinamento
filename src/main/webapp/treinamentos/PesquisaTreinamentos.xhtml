@@ -1,0 +1,183 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Treinamentos</ui:define>
+
+
+	<ui:define name="content">
+		<p:messages autoUpdate="true" closable="true" />
+		<div class="Container100 Responsive100 NoIndent Flex FlexWrap">
+			<div class="Container100 Responsive100 Flex">
+				<div class="Container100">
+					<div class="Card">
+						<div class="CardTopic TexAlCenter">
+							<span class="fa fa-fw fa-table"></span> Treinamentos
+						</div>
+						<div class="SeparatorFull"></div>
+						<h:form id="frmPesquisa">
+							<p:toolbar style="margin-bottom: 10px;">
+								<p:toolbarGroup>
+									<p:commandButton value="Pesquisar" icon="fa fa-search"
+										action="#{PesTreinamentoMB.carregarTreinamentos}"
+										update="frmPesquisa:treinamentoTable" />
+								</p:toolbarGroup>
+								<p:toolbarGroup align="right">
+									<p:button icon="fa fa-fw fa-plus" value="Novo"
+										title="Novo treinamento"
+										outcome="/treinamentos/CadastroTreinamento" />
+								</p:toolbarGroup>
+							</p:toolbar>
+
+							<p:fieldset legend="Filtros" toggleable="true" toggleSpeed="650">
+								<p:panelGrid id="panelFiltros" columns="2"
+									styleClass="ui-panelgrid-blank"
+									columnClasses="ui-grid-col-2, ui-grid-col-10" layout="grid">
+
+									<p:outputLabel value="Treinamento" />
+									<p:inputText id="treinamento"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesTreinamentoMB.filtro.titulo}" maxlength="150" />
+
+									<p:outputLabel value="Período" />
+									<h:panelGroup>
+										<p:calendar size="10" pattern="dd/MM/yyyy"
+											value="#{PesTreinamentoMB.filtro.deInicio}" />
+						    			a
+						    			<p:calendar size="10" pattern="dd/MM/yyyy"
+											value="#{PesTreinamentoMB.filtro.deFim}" />
+									</h:panelGroup>
+
+									<p:outputLabel value="Situação" />
+									<p:selectManyCheckbox id="situacao"
+										value="#{PesTreinamentoMB.filtro.situacoes}">
+										<f:selectItems value="#{PesTreinamentoMB.situacoes}"
+											var="situacao" itemLabel="#{situacao.descricao}"
+											itemValue="#{situacao}" />
+									</p:selectManyCheckbox>
+
+									<p:outputLabel value="Tipo de treinamento" />
+									<p:selectManyCheckbox id="tipo"
+										value="#{PesTreinamentoMB.filtro.tipos}">
+										<f:selectItems value="#{PesTreinamentoMB.tipos}" var="tipo"
+											itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+									</p:selectManyCheckbox>
+									
+									<p:outputLabel value="Empresa" />
+									<p:selectManyCheckbox id="empresa"
+										value="#{PesTreinamentoMB.filtro.empresas}" required="true" 
+										requiredMessage="Selecione ao menos uma empresa.">
+										<f:selectItems value="#{PesTreinamentoMB.listaEmpresas}"
+											var="empresa" itemLabel="#{empresa.sigla}" itemValue="#{empresa.id}" />
+									</p:selectManyCheckbox>									
+								</p:panelGrid>
+							</p:fieldset>
+							<p:dataTable id="treinamentoTable"
+								value="#{PesTreinamentoMB.filtrado}" var="treinamento"
+								emptyMessage="Nenhum treinamento encontrado."
+								style="margin-top: 10px;" rows="10"
+								paginatorAlwaysVisible="false" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								reflow="true">
+
+								<p:column headerText="Título">
+									<h:outputText value="#{treinamento.titulo}" />
+								</p:column>
+
+								<p:column headerText="Tipo"
+									sortBy="#{treinamento.tipoTreinamento}">
+									<h:outputText value="#{treinamento.tipoTreinamento.descricao}" />
+								</p:column>
+
+								<p:column headerText="Iniciado em">
+									<h:outputText value="#{treinamento.dtaInicio}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Concluído em">
+									<h:outputText value="#{treinamento.dtaFim}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Situação" sortBy="#{treinamento.situacao}">
+									<h:outputText value="#{treinamento.situacao.descricao}" />
+								</p:column>
+
+								<p:column width="70px" style="text-align: center;">
+									<p:button outcome="/treinamentos/CadastroTreinamento"
+										icon="fa fa-pencil" title="Editar">
+										<f:param name="id" value="#{treinamento.id}" />
+									</p:button>
+									<p:commandButton styleClass="RedButton RaisedButton"
+										icon="fa fa-trash" title="Excluir" process="@this"
+										update=":frmPesquisa:confirmacaoExclusaoDialog"
+										oncomplete="PF('confirmacaoExclusao').show()">
+										<f:setPropertyActionListener value="#{treinamento}"
+											target="#{PesTreinamentoMB.selecionado}" />
+									</p:commandButton>
+									<p:commandButton disabled="#{treinamento.dtaFim != null}"
+										styleClass="GreenButton RaisedButton" icon="fa fa-check"
+										title="Encerrar" process="@this"
+										update=":frmPesquisa:encerramentoTreinamentoDialog"
+										oncomplete="PF('encerramentoTreinamento').show()">
+										<f:setPropertyActionListener value="#{treinamento}"
+											target="#{PesTreinamentoMB.selecionado}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+
+							<p:confirmDialog header="Exclusão de treinamento"
+								message="Tem certeza que deseja excluir o treinamento de #{PesTreinamentoMB.selecionado.titulo}"
+								widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+								<p:button value="Não"
+									onclick="PF('confirmacaoExclusao').hide(); return false;" />
+								<p:commandButton value="Sim"
+									oncomplete="PF('confirmacaoExclusao').hide();"
+									action="#{PesTreinamentoMB.excluir()}" process="@this"
+									update=":frmPesquisa:treinamentoTable" />
+							</p:confirmDialog>
+
+							<p:dialog header="Encerrar treinamento"
+								message="Informe a data de conclusão do treinamento de #{PesTreinamentoMB.selecionado.titulo}"
+								widgetVar="encerramentoTreinamento"
+								id="encerramentoTreinamentoDialog" modal="true">
+								<div class="Container100 Responsive100">
+									<p:panelGrid id="panelRegional" columns="2" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-grid-col-4, ui-grid-col-6">
+										<p:outputLabel value="Data de conclusão" for="dataConclusao" />
+										<p:calendar id="dataConclusao"
+											value="#{PesTreinamentoMB.selecionado.dtaFim}" pages="2"
+											pattern="dd/MM/yyyy">
+										</p:calendar>
+									</p:panelGrid>
+									<p:separator />
+									<div class="ui-grid ui-grid-responsive">
+										<div class="ui-grid-row">
+											<div class="ui-grid-col-7"></div>
+											<div class="ui-grid-col-5">
+											<p:button styleClass="OrangeButton" value="Não"
+												onclick="PF('encerramentoTreinamento').hide(); return false;" />
+											<p:commandButton styleClass="BlueButton" value="Sim"
+												oncomplete="PF('encerramentoTreinamento').hide();"
+												actionListener="#{encerrarTreinamentoBean.encerrarTreinamento}"
+												update=":frmPesquisa:treinamentoTable" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</p:dialog>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Cadastro de agência</ui:define>
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{CadAgenciaMB.agencia}" />
+		<f:viewAction action="#{CadAgenciaMB.inicializar}"
+			type="preRenderView"></f:viewAction>
+	</f:metadata>
+
+	<ui:define name="content">
+		<h:form id="frm">
+			<p:messages autoUpdate="true" closable="true" />
+			<p:toolbar styleClass="toolbar-sis">
+				<p:toolbarGroup>
+					<p:commandButton class="RaisedButton" value="Salvar"
+						actionListener="#{CadAgenciaMB.salvar}" update="@form"
+						icon="fa fw fa-save" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button icon="fa fa-fw fa-plus" value="Novo" title="Nova agência"
+						outcome="/agencias/CadastroAgencia" />
+					<p:separator />
+					<p:button class="RaisedButton" value="Pesquisar"
+						outcome="/agencias/PesquisaAgencia" icon="fa fw fa-search" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<div class="Card">
+				<div class="CardTopic">Cadastro de agência</div>
+				<div class="SeparatorFull"></div>
+				<div class="Container100 Responsive100">
+					<p:panelGrid id="panelAgencia" columns="2" layout="grid"
+						styleClass="ui-panelgrid-blank"
+						columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+						<p:outputLabel value="Empresa" for="empresa" />
+						<p:selectOneMenu id="empresa"
+							value="#{CadAgenciaMB.empresaSelecionada}" required="true"
+							styleClass="ui-grid-col-6" converter="empresaSelectItemsConverter">
+							<f:selectItem itemLabel="Selecione a empresa." noSelectionOption="true"/>
+							<f:selectItems value="#{CadAgenciaMB.listaEmpresa}" var="empresa"
+								itemLabel="#{empresa.sigla}" itemValue="#{empresa}" />
+							<p:ajax event="change"
+								listener="#{CadAgenciaMB.carregarRegionais(CadAgenciaMB.empresaSelecionada.id)}"
+								update="regional" process="@this" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Regional" for="regional" />
+						<p:selectOneMenu id="regional"
+							value="#{CadAgenciaMB.agencia.regional}" required="true"
+							effect="fold" styleClass="ui-grid-col-6" converter="regionalSelectItemsConverter">
+							<f:selectItem itemLabel="Selecione uma regional."
+								noSelectionOption="true" />
+							<f:selectItems value="#{CadAgenciaMB.lista}" var="regional"
+								itemLabel="#{regional.nome}" itemValue="#{regional}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Nome" for="nome" />
+						<p:inputText id="nome" value="#{CadAgenciaMB.agencia.nome}"
+							styleClass="ui-grid-col-6" maxlength="100" required="true"
+							placeholder="Nome da agência" />
+
+						<p:outputLabel value="Situação" for="situacao"
+							rendered="#{not CadAgenciaMB.agencia.novo}" />
+						<p:selectOneMenu id="situacao"
+							value="#{CadAgenciaMB.agencia.situacao}"
+							rendered="#{not CadAgenciaMB.agencia.novo}"
+							styleClass="ui-grid-col-6">
+							<f:selectItem itemLabel="Selecione a situação da agência."
+								noSelectionOption="true" />
+							<f:selectItems value="#{CadAgenciaMB.situacoes}" var="situacao"
+								itemLabel="#{situacao.descricao}" itemValue="#{situacao}" />
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

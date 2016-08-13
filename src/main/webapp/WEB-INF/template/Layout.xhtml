@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" />
+	</f:facet>
+
+	<h:outputStylesheet library="frostworks" name="css/primefaces.css" />
+	<h:outputScript library="frostworks" name="js/jquery-plugins.js" />
+	<h:outputScript library="frostworks" name="js/primefaces.js" />
+	<h:outputStylesheet library="frostworks" name="css/charts.css" />
+	<h:outputScript library="frostworks" name="js/charts.js" />
+	<h:outputStylesheet library="frostworks" name="css/core-layout.css" />
+	<h:outputStylesheet library="frostworks" name="css/animate.css" />
+	<h:outputStylesheet library="frostworks" name="css/volt-font.css" />
+	<h:outputStylesheet library="frostworks" name="css/volt-layout.css" />
+	<h:outputStylesheet library="frostworks" name="css/sistema.css" />
+	<h:outputScript name="jquery/jquery.js" library="primefaces" />
+	<h:outputScript library="frostworks" name="js/layout.js" />
+
+	<title><ui:insert name="titulo"></ui:insert></title>
+
+	<style type="text/css">
+.jqplot-target, .jqplot-axis {
+	color: #546E7A;
+}
+</style>
+
+</h:head>
+
+<h:body class="BlueBody PopupMenu">
+	<!-- TOPBAR START -->
+	<ui:include src="Top.xhtml" />
+	<!-- TOPBAR END -->
+
+	<!-- TOPMENU START -->
+	<!-- 		<ui:include src="Logado.xhtml" /> -->
+	<ul id="top-menu">
+	</ul>
+	<!-- TOPMENU END -->
+	<div id="layout-portlets-cover">
+		<div id="layout-portlets-cover-indent">
+			<div id="layout-portlets-table">
+				<div id="layout-portlets-tablerow">
+					<div id="layout-portlets-tablecell-left">
+
+						<ui:include src="Menu.xhtml" />
+
+					</div>
+					<div id="layout-portlets-tablecell-right">
+						<!-- left content -->
+						<p:ajaxStatus onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()" />
+
+						<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+							closable="false" resizable="false" showHeader="false">
+							<h2>Aguarde...</h2>
+							<h:graphicImage library="frostworks" name="images/loading_custom.gif" />
+						</p:dialog>
+						<ui:insert name="content" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</h:body>
+
+</html>

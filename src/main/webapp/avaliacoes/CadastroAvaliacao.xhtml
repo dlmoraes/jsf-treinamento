@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Avaliação</ui:define>
+
+	<f:metadata>
+		<o:viewParam name="id_lot" value="#{CadAvaliacaoMB.id_lot}" />
+		<o:viewParam name="id_tre" value="#{CadAvaliacaoMB.id_tre}" />
+		<o:viewParam name="id_mat" value="#{CadAvaliacaoMB.matricula}" />
+		<o:viewParam name="id" value="#{CadAvaliacaoMB.avaliacao}" />
+		<f:viewAction action="#{CadAvaliacaoMB.inicializar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="frm" enctype="multipart/form-data">
+			<p:messages autoUpdate="true" closable="true" />
+			<p:toolbar styleClass="toolbar-sis">
+				<p:toolbarGroup>
+					<p:commandButton class="RaisedButton" value="Salvar"
+						actionListener="#{CadAvaliacaoMB.salvar}" update="@form"
+						icon="fa fw fa-save" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button id="btnAvaliarMatriculados" class="RaisedButton"
+						value="Voltar" outcome="/avaliacoes/AvalicoesDisponiveis"
+						icon="fa fw fa-reply"
+						title="Voltar a lançar notas dos matriculados.">
+						<f:param name="id_lot" value="#{CadAvaliacaoMB.id_lot}" />
+						<f:param name="id_tre" value="#{CadAvaliacaoMB.id_tre}" />
+					</p:button>
+					<p:tooltip id="toolBtnAvaliarMatriculados" showEffect="fade"
+						hideEffect="fade" for="btnAvaliarMatriculados" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:panel header="Dados do matriculado" toggleable="true">
+				<p:panelGrid id="panelDadosMatriculado" columns="2" layout="grid"
+					styleClass="ui-panelgrid-blank"
+					columnClasses="ui-grid-col-2, ui-grid-col-10">
+					<p:outputLabel value="Nome" />
+					<p:outputLabel value="#{CadAvaliacaoMB.matricula.atendente.nome}" />
+					<p:outputLabel value="Agência" />
+					<p:outputLabel
+						value="#{CadAvaliacaoMB.matricula.atendente.agencia.nome}" />
+					<p:outputLabel value="Treinamento" />
+					<p:outputLabel
+						value="#{CadAvaliacaoMB.treinamentoSelecionado.titulo}" />
+					<p:outputLabel value="Iniciado em" />
+					<p:outputLabel
+						value="#{CadAvaliacaoMB.treinamentoSelecionado.dtaInicio}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:outputLabel>
+				</p:panelGrid>
+			</p:panel>
+			<p:separator />
+			<div class="Card">
+				<div class="CardTopic">Avaliação do atendente no treinamento.</div>
+				<div class="SeparatorFull"></div>
+				<div class="Container100 Responsive100">
+					<p:panelGrid id="panelAvaliacao" columns="2" layout="grid"
+						styleClass="ui-panelgrid-blank"
+						columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+						<p:outputLabel value="Prova aplicada em" for="dataAplicacaoProva1" />
+						<p:calendar id="dataAplicacaoProva1"
+							value="#{CadAvaliacaoMB.avaliacao.dtaAplicacaoProva1}"
+							pattern="dd/MM/yyyy" mask="true" />
+
+						<p:outputLabel value="Nota" for="nota1" />
+						<p:inputText id="nota1" value="#{CadAvaliacaoMB.avaliacao.nota1}"
+							styleClass="ui-grid-col-4" type="number" required="true">
+							<p:ajax event="blur" process="@this" update="lblDataAplicacaoProva2 dataAplicacaoProva2 lblNota2 nota2 arquivoNota2" />
+						</p:inputText>
+
+						<p:outputLabel />
+						<p:fileUpload id="arquivoNota1" name="arquivoNota1"
+							fileUploadListener="#{CadAvaliacaoMB.uploadActionNota1}"
+							fileLimit="1" fileLimitMessage="Excedido Limite de arquivos"
+							cancelLabel="Cancelar" label="Anexar prova 1"
+							uploadLabel="Enviar prova"
+							invalidFileMessage="Somente arquivos .pdf"
+							allowTypes="/(\.|\/)(pdf)$/" mode="advanced" skinSimple="true"
+							styleClass="ui-grid-col-10" required="true">
+						</p:fileUpload>
+
+						<p:outputLabel id="lblDataAplicacaoProva2" value="Prova aplicada em" for="dataAplicacaoProva2"
+							rendered="#{CadAvaliacaoMB.avaliacao.recuperacao}" />
+						<p:calendar id="dataAplicacaoProva2"
+								value="#{CadAvaliacaoMB.avaliacao.dtaAplicacaoProva2}"
+								pattern="dd/MM/yyyy" mask="true"
+								rendered="#{CadAvaliacaoMB.avaliacao.recuperacao}" />
+
+							<p:outputLabel id="lblNota2" value="Nota 2" for="nota2"
+								rendered="#{CadAvaliacaoMB.avaliacao.recuperacao}" />
+							<p:inputText id="nota2" value="#{CadAvaliacaoMB.avaliacao.nota2}"
+								styleClass="ui-grid-col-4" type="number"
+								rendered="#{CadAvaliacaoMB.avaliacao.recuperacao}" />
+
+							<p:outputLabel />
+							<p:fileUpload id="arquivoNota2" name="arquivoNota2"
+								fileUploadListener="#{CadAvaliacaoMB.uploadActionNota2}"
+								fileLimit="1" fileLimitMessage="Excedido Limite de arquivos"
+								cancelLabel="Cancelar" label="Arquivo"
+								uploadLabel="Anexar prova 2"
+								invalidFileMessage="Somente arquivos .pdf"
+								allowTypes="/(\.|\/)(pdf)$/" mode="advanced" skinSimple="true"
+								rendered="#{CadAvaliacaoMB.avaliacao.recuperacao}" />
+					</p:panelGrid>
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

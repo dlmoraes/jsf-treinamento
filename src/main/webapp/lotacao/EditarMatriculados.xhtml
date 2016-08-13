@@ -1,0 +1,127 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Editar matriculas</ui:define>
+
+	<f:metadata>
+		<o:viewParam name="id" value="#{CadMatriculaMB.lotacao}" />
+		<f:viewAction action="#{CadMatriculaMB.inicializar}"
+			type="preRenderView"></f:viewAction>
+	</f:metadata>
+
+	<ui:define name="content">
+		<br />
+		<h:form id="frm">
+			<p:messages autoUpdate="true" closable="true" />
+			<p:toolbar styleClass="toolbar-sis">
+				<p:toolbarGroup>
+					<p:commandButton class="RaisedButton" value="Salvar" update="@form"
+						icon="fa fw fa-save" action="#{CadMatriculaMB.salvar}" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button icon="fa fa-fw fa-plus" value="Novo" title="Nova lotação"
+						outcome="/lotacao/RealizarLotacao" />
+					<p:separator />
+					<p:button class="RaisedButton" value="Pesquisar"
+						icon="fa fw fa-search" outcome="/lotacao/PesquisaLotacao" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<div class="Card">
+				<div class="CardTopic">Editar matriculas</div>
+				<div class="SeparatorFull"></div>
+				<div class="Container100 Responsive100">
+					<p:fieldset legend="Filtro atendente" toggleable="true"
+						toggleSpeed="650">
+						<p:panelGrid id="panelFiltros" columns="2"
+							styleClass="ui-panelgrid-blank"
+							columnClasses="ui-grid-col-2, ui-grid-col-10" layout="grid">
+
+							<p:outputLabel value="Empresa" for="empresa" />
+							<p:inputText id="empresa"
+								value="#{CadMatriculaMB.lotacao.empresa.nome}"
+								styleClass="ui-grid-col-6" readonly="true" />
+
+							<p:outputLabel value="Tipo de treinamento" />
+							<p:inputText id="tipo"
+								value="#{CadMatriculaMB.lotacao.treinamento.tipoTreinamento.descricao}"
+								readonly="true" />
+
+							<p:outputLabel value="Regional" />
+							<p:inputText id="regional"
+								value="#{CadMatriculaMB.lotacao.regional.nome}" readonly="true" />
+
+							<br />
+
+							<h:panelGroup style="float: right;">
+								<p:commandButton id="btnCarregarTreinamentos"
+									title="Carregar treinamentos" icon="fa fa-search">
+								</p:commandButton>
+								<p:tooltip for="btnCarregarTreinamentos" showEffect="fade"
+									position="top" />
+							</h:panelGroup>
+						</p:panelGrid>
+					</p:fieldset>
+
+					<p:dataTable value="#{CadMatriculaMB.lotacao.matriculas}"
+						var="matricula" id="tabelaItens" rowIndexVar="linha">
+
+						<f:facet name="header">
+							Matriculados no treinamento: #{CadMatriculaMB.lotacao.treinamento.titulo}
+						</f:facet>
+
+						<p:column headerText="Login" style="text-align: center;"
+							width="10px">
+							<h:outputText value="#{matricula.atendente.matricula}"
+								rendered="#{matricula.atendenteAssociado}" />
+
+							<p:inputText size="10" value="#{CadMatriculaMB.matAtendente}"
+								label="Login" rendered="#{not matricula.atendenteAssociado}">
+								<p:ajax event="change" process="@this" update="tabelaItens"
+									listener="#{CadMatriculaMB.carregarAtendentePorLogin}" />
+							</p:inputText>
+						</p:column>
+
+						<p:column headerText="Nome" style="width: 225px;">
+							<h:outputText value="#{matricula.atendente.nome}" />
+
+							<p:autoComplete value="#{CadMatriculaMB.atendenteLinhaEditavel}"
+								completeMethod="#{CadMatriculaMB.completarAtendente}"
+								var="atendente" itemLabel="#{atendente.nome}" minQueryLength="5"
+								itemValue="#{atendente}" forceSelection="true"
+								rendered="#{not matricula.atendenteAssociado}" dropdown="true"
+								title="Digite as quatro primeiras letras do nome do atendente.">
+								<p:ajax event="itemSelect" update="tabelaItens"
+									listener="#{CadMatriculaMB.carregarAtendenteLinhaEditavel}" />
+							</p:autoComplete>
+						</p:column>
+
+						<p:column headerText="Agência">
+							<h:outputText value="#{matricula.atendente.agencia.nome}" />
+						</p:column>
+
+						<p:column headerText="Cargo">
+							<h:outputText value="#{matricula.atendente.cargo.nome}" />
+						</p:column>
+
+						<p:column>
+							<p:commandButton icon="fa fa-remove"
+								actionListener="#{CadMatriculaMB.lotacao.removeMatricula(linha, matricula)}"
+								process="@this" update="tabelaItens"
+								rendered="#{matricula.atendenteAssociado}">
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

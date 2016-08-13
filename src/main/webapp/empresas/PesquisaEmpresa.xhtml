@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Empresas</ui:define>
+
+	<ui:define name="content">
+		<p:messages autoUpdate="true" closable="true" />
+		<div class="Container100 Responsive100 NoIndent Flex FlexWrap">
+			<div class="Container100 Responsive100 Flex">
+				<div class="Container100">
+					<div class="Card">
+						<div class="CardTopic TexAlCenter">
+							<span class="fa fa-fw fa-table"></span> Empresas
+						</div>
+						<div class="SeparatorFull"></div>
+						<h:form id="frmPesquisa">
+							<p:toolbar>
+								<p:toolbarGroup>
+									<p:commandButton value="Pesquisar" icon="fa fa-search" />
+								</p:toolbarGroup>
+								<p:toolbarGroup align="right">
+									<p:button icon="fa fa-fw fa-plus" value="Novo"
+										title="Nova empresa" outcome="/empresas/CadastroEmpresa" />
+								</p:toolbarGroup>
+							</p:toolbar>
+							<p:dataTable id="empresaTable" value="#{PesEmpresaMB.lista}"
+								var="empresa" emptyMessage="Nenhuma empresa encontrada."
+								style="margin-top: 10px;" rows="10"
+								paginatorAlwaysVisible="false" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								reflow="true">
+
+								<p:column headerText="Nome" sortBy="#{empresa.nome}">
+									<h:outputText value="#{empresa.nome}" />
+								</p:column>
+
+								<p:column headerText="Sigla" width="80"
+									sortBy="#{empresa.sigla}">
+									<h:outputText value="#{empresa.sigla}" />
+								</p:column>
+
+								<p:column headerText="Criado em">
+									<h:outputText value="#{empresa.dtaCriacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Alterado em">
+									<h:outputText value="#{empresa.dtaModificacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column width="70px" style="text-align: center;">
+									<p:button outcome="/empresas/CadastroEmpresa"
+										icon="fa fa-pencil" title="Editar">
+										<f:param name="id" value="#{empresa.id}" />
+									</p:button>
+									<p:commandButton styleClass="RedButton RaisedButton"
+										icon="fa fa-trash" title="Excluir" process="@this"
+										update=":frmPesquisa:confirmacaoExclusaoDialog"
+										oncomplete="PF('confirmacaoExclusao').show()">
+										<f:setPropertyActionListener value="#{empresa}"
+											target="#{PesEmpresaMB.selecionada}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+							<p:confirmDialog header="Exclusão de empresa"
+								message="Tem certeza que deseja excluir a empresa #{PesEmpresaMB.selecionada.nome}?"
+								widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+								<p:button value="Não"
+									onclick="PF('confirmacaoExclusao').hide(); return false;" />
+								<p:commandButton value="Sim"
+									oncomplete="PF('confirmacaoExclusao').hide();"
+									action="#{PesEmpresaMB.excluirEmpresa()}" process="@this"
+									update=":frmPesquisa:empresaTable" />
+							</p:confirmDialog>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

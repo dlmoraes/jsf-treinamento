@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Lotações</ui:define>
+
+	<ui:define name="content">
+		<p:messages autoUpdate="true" closable="true" />
+		<div class="Container100 Responsive100 NoIndent Flex FlexWrap">
+			<div class="Container100 Responsive100 Flex">
+				<div class="Container100">
+					<div class="Card">
+						<div class="CardTopic TexAlCenter">
+							<span class="fa fa-fw fa-table"></span> Lotações
+						</div>
+						<div class="SeparatorFull"></div>
+						<h:form id="frmPesquisa" enctype="multipart/form-data">
+							<p:toolbar styleClass="toolbar-sis">
+								<p:toolbarGroup>
+									<p:commandButton value="Pesquisar" icon="fa fa-search"
+										action="#{PesLotacaoMB.pesquisar}" update="@form" />
+								</p:toolbarGroup>
+								<p:toolbarGroup align="right">
+									<p:button icon="fa fa-fw fa-plus" value="Novo"
+										title="Nova lotação" outcome="/lotacao/RealizarLotacao" />
+								</p:toolbarGroup>
+							</p:toolbar>
+
+							<p:fieldset legend="Filtros" toggleable="true" toggleSpeed="650">
+								<p:panelGrid id="panelFiltros" columns="2"
+									styleClass="ui-panelgrid-blank"
+									columnClasses="ui-grid-col-2, ui-grid-col-10" layout="grid">
+
+									<p:outputLabel value="Atendente" />
+									<p:inputText id="atendente"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesLotacaoMB.filtro.nomeAtendente}" maxlength="100" />
+
+									<p:outputLabel value="Treinamento" />
+									<p:inputText id="treinamento"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesLotacaoMB.filtro.treinamento}" maxlength="100" />
+
+									<p:outputLabel value="Tipo de treinamento" />
+									<p:selectManyCheckbox id="tipo"
+										value="#{PesLotacaoMB.filtro.tipoTreinamentos}">
+										<f:selectItems value="#{PesLotacaoMB.tiposTreinamento}"
+											var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+									</p:selectManyCheckbox>
+								</p:panelGrid>
+							</p:fieldset>
+
+							<p:dataTable id="lotacaoTable" value="#{PesLotacaoMB.lotacoes}"
+								var="lotacao" emptyMessage="Nenhuma lotação encontrada."
+								style="margin-top: 10px;" rows="10"
+								paginatorAlwaysVisible="false" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								reflow="true">
+
+								<p:column headerText="Treinamento">
+									<h:outputText value="#{lotacao.treinamento.titulo}" />
+								</p:column>
+
+								<p:column headerText="Situação">
+									<h:outputText value="#{lotacao.situacao.descricao}" />
+								</p:column>
+
+								<p:column headerText="Iniciado em">
+									<h:outputText value="#{lotacao.dtaCriacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Matriculados">
+									<h:outputText value="#{lotacao.matriculas.size()}" />
+								</p:column>
+
+								<p:column width="80px">
+									<p:commandButton id="btnAlterarTreinamento" icon="fa fa-cog"
+										title="Alterar treinamento" process="@this"
+										update=":frmPesquisa:alterarTreinamentoDialog"
+										oncomplete="PF('alterarTreinamento').show()">
+										<f:setPropertyActionListener value="#{lotacao}"
+											target="#{PesLotacaoMB.selecionada}" />
+									</p:commandButton>
+									<p:tooltip id="toolBtnAlterarTreinamento" showEffect="fade" hideEffect="fade"
+										for="btnAlterarTreinamento" />
+										
+									<p:button id="btnEditarTreinamento" outcome="/lotacao/RealizarLotacao"
+										icon="fa fa-pencil" title="Editar lotação">
+										<f:param name="id" value="#{lotacao.id}" />
+									</p:button>
+									<p:tooltip id="toolBtnEditarTreinamento" showEffect="fade" hideEffect="fade"
+										for="btnEditarTreinamento" />
+										
+									<p:button id="btnEditarMatriculados" outcome="/lotacao/EditarMatriculados"
+										icon="fa fa-group" title="Editar matriculados">
+										<f:param name="id" value="#{lotacao.id}" />
+									</p:button>
+									<p:tooltip id="toolBtnEditarMatriculados" showEffect="fade" hideEffect="fade"
+										for="btnEditarMatriculados" />		
+										
+									<p:button id="btnAvaliarMatriculados" outcome="/avaliacoes/AvalicoesDisponiveis"
+									 icon="fa fa-bookmark" title="Lançar notas dos matriculados.">
+										<f:param name="id_lot" value="#{lotacao.id}" />
+										<f:param name="id_tre" value="#{lotacao.treinamento.id}"/>
+									</p:button>
+									<p:tooltip id="toolBtnAvaliarMatriculados" showEffect="fade" hideEffect="fade"
+										for="btnAvaliarMatriculados" />																		
+								</p:column>
+
+							</p:dataTable>
+							<p:dialog header="Alterar treinamento"
+								message="Informe o novo cargo de #{PesLotacaoMB.selecionada.treinamento.titulo}"
+								widgetVar="alterarTreinamento" id="alterarTreinamentoDialog" modal="true" width="40%">
+								<div class="Container100 Responsive100">
+									<p:panelGrid id="panelAlterarTreinamento" columns="2" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-grid-col-4">
+										<p:outputLabel value="Treinamento" for="treinamentoAlterado" />
+
+										<p:selectOneMenu id="treinamentoAlterado"
+											value="#{PesLotacaoMB.selecionada.treinamento}"
+											converter="treinamentoSelectItemsConverter" filter="true"
+											filterMatchMode="contains" columnClasses="ui-grid-col-8">
+											<f:selectItem itemLabel="Selecione o treinamento."
+												noSelectionOption="true" />
+											<f:selectItems value="#{PesLotacaoMB.treinamentos}"
+												var="treinamento" itemLabel="#{treinamento.titulo}" itemValue="#{treinamento}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+									<p:separator />
+									<h:panelGroup layout="div" style="margin-left: 60%;">
+										<p:button styleClass="OrangeButton" value="Não"
+											onclick="PF('alterarTreinamento').hide(); return false;" />
+										<p:commandButton styleClass="BlueButton" value="Sim"
+											oncomplete="PF('alterarTreinamento').hide();"
+											actionListener="#{alterarTreinamentoBean.alterarTreinamento}"
+											update=":frmPesquisa:lotacaoTable" />
+									</h:panelGroup>
+								</div>
+							</p:dialog>
+
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

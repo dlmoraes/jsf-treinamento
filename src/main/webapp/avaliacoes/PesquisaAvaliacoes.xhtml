@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Avalições</ui:define>
+
+	<ui:define name="content">
+		<p:messages autoUpdate="true" closable="true" />
+		<div class="Container100 Responsive100 NoIndent Flex FlexWrap">
+			<div class="Container100 Responsive100 Flex">
+				<div class="Container100">
+					<div class="Card">
+						<div class="CardTopic TexAlCenter">
+							<span class="fa fa-fw fa-table"></span> Avaliações
+						</div>
+						<div class="SeparatorFull"></div>
+						<h:form id="frmPesquisa">
+							<p:toolbar styleClass="toolbar-sis">
+								<p:toolbarGroup>
+									<p:commandButton value="Pesquisar" icon="fa fa-search" />
+								</p:toolbarGroup>
+								<p:toolbarGroup align="right">
+									<p:button icon="fa fa-fw fa-plus" value="Novo" title="Avaliar" />
+								</p:toolbarGroup>
+							</p:toolbar>
+							<p:fieldset legend="Filtros" toggleable="true" toggleSpeed="650">
+								<p:panelGrid id="panelFiltros" columns="2"
+									styleClass="ui-panelgrid-blank"
+									columnClasses="ui-grid-col-2, ui-grid-col-10" layout="grid">
+
+									<p:outputLabel value="Atendente" />
+									<p:inputText id="atendente"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesLotacaoMB.filtro.nomeAtendente}" maxlength="100" />
+
+									<p:outputLabel value="Treinamento" />
+									<p:inputText id="treinamento"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesLotacaoMB.filtro.treinamento}" maxlength="100" />
+
+									<p:outputLabel value="Tipo de treinamento" />
+									<p:selectManyCheckbox id="tipo"
+										value="#{PesLotacaoMB.filtro.tipoTreinamentos}">
+										<f:selectItems value="#{PesLotacaoMB.tiposTreinamento}"
+											var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+									</p:selectManyCheckbox>
+								</p:panelGrid>
+							</p:fieldset>
+							<p:dataTable id="avaliacaoTable"
+								value="#{PesAvaliacaoMB.filtrado}" var="avaliacao"
+								emptyMessage="Nenhuma avaliação encontrada."
+								style="margin-top: 10px;" rows="10"
+								paginatorAlwaysVisible="false" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								reflow="true">
+
+								<p:column headerText="Treinamento">
+									<h:outputText value="#{avaliacao.lotacao.treinamento.titulo}" />
+								</p:column>
+
+								<p:column headerText="Iniciado em">
+									<h:outputText
+										value="#{avaliacao.lotacao.treinamento.dtaInicio}" />
+								</p:column>
+
+								<p:column headerText="Matriculados">
+									<h:outputText value="#{avaliacao.lotacao.matriculas.size}" />
+								</p:column>
+
+							</p:dataTable>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

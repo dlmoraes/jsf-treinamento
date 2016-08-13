@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<f:facet name="first">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</f:facet>
+
+	<title><ui:insert name="titulo"></ui:insert> - FrostWorks</title>
+
+	<h:outputStylesheet library="frostworks" name="css/core-layout.css" />
+	<h:outputStylesheet library="frostworks" name="css/volt-layout.css" />
+	<h:outputStylesheet library="frostworks" name="css/volt-font.css" />
+	<h:outputStylesheet library="frostworks" name="css/theme.css" />
+
+	<h:outputScript target="body" library="primefaces"
+		name="jquery/jquery.js" />
+	<h:outputScript target="body" library="frostworks"
+		name="js/app.js" />
+		
+</h:head>
+
+<h:body class="LeadenBody">
+
+		<div class="Container100">
+			<div class="Container100">
+				<div class="Wid30 OvHidden DispBlock MarAuto WidAutoOnMobile"
+					style="margin-top: 7%;">
+					<div class="Card ShadowEffect">
+
+						<div class="Container100">
+							<div class="Card RedBack White TexAlCenter Fs20 FontVoltBold">
+								Ocorreu um erro!
+							</div>
+						</div>
+
+						<div class="Container100 TexAlCenter Responsive100">
+							<h:graphicImage library="frostworks" name="images/weather-10.svg"
+			width="125" height="125" styleClass="Fs100" style=""/>
+							<div class="EmptyBox10"></div>
+							<span class="FontVoltSemiBold DispBlock Fs20">
+								Excecão!
+							</span>
+							<div class="EmptyBox20"></div>
+							<span class="FontVoltRegular Fs16">
+								<div class="Separator"></div>
+								<h:link outcome="/index" class="ui-link ui-widget" value="Retornar a página principal" /> 
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</h:body>
+
+</html>

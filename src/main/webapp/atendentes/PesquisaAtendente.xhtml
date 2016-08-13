@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template/Layout.xhtml">
+
+	<ui:define name="titulo">Atendentes</ui:define>
+
+	<ui:define name="content">
+		<p:messages autoUpdate="true" closable="true" />
+		<div class="Container100 Responsive100 NoIndent Flex FlexWrap">
+			<div class="Container100 Responsive100 Flex">
+				<div class="Container100">
+					<div class="Card">
+						<div class="CardTopic TexAlCenter">
+							<span class="fa fa-fw fa-table"></span> Atendentes
+						</div>
+						<div class="SeparatorFull"></div>
+						<h:form id="frmPesquisa">
+							<p:toolbar style="margin-bottom: 10px;">
+								<p:toolbarGroup>
+									<p:commandButton value="Pesquisar" icon="fa fa-search"
+										action="#{PesAtendenteMB.carregarAtendentes}"
+										update="atendenteTable" />
+								</p:toolbarGroup>
+								<p:toolbarGroup align="right">
+									<p:button icon="fa fa-fw fa-plus" value="Novo"
+										title="Novo atendente" outcome="/atendentes/CadastroAtendente" />
+								</p:toolbarGroup>
+							</p:toolbar>
+
+							<p:fieldset legend="Filtros" toggleable="true" toggleSpeed="650">
+								<p:panelGrid id="panelFiltros" columns="2"
+									styleClass="ui-panelgrid-blank"
+									columnClasses="ui-grid-col-2, ui-grid-col-10" layout="grid">
+
+									<p:outputLabel value="Matricula" />
+									<p:inputText id="matricula"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesAtendenteMB.filtro.matricula}" maxlength="10" />
+
+									<p:outputLabel value="Atendente" />
+									<p:inputText id="atendente"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesAtendenteMB.filtro.nome}" maxlength="100" />
+
+									<p:outputLabel value="Agência" />
+									<p:inputText id="agencia"
+										styleClass="campo-filtro ui-grid-col-6"
+										value="#{PesAtendenteMB.filtro.agencia}" maxlength="100" />
+
+									<p:outputLabel value="Situação" />
+									<p:selectManyCheckbox id="situacao"
+										value="#{PesAtendenteMB.filtro.situacoes}">
+										<f:selectItems value="#{PesAtendenteMB.situacoes}"
+											var="situacao" itemLabel="#{situacao.descricao}"
+											itemValue="#{situacao}" />
+									</p:selectManyCheckbox>
+								</p:panelGrid>
+							</p:fieldset>
+
+							<p:dataTable id="atendenteTable"
+								value="#{PesAtendenteMB.filtrado}" var="atendente"
+								emptyMessage="Nenhum atendente encontrado."
+								style="margin-top: 10px;" rows="10"
+								paginatorAlwaysVisible="false" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								reflow="true">
+
+								<p:column headerText="Matricula">
+									<h:outputText value="#{atendente.matricula}" />
+								</p:column>
+
+								<p:column headerText="Nome" sortBy="#{atendente.nome}">
+									<h:outputText value="#{atendente.nome}" />
+								</p:column>
+
+								<p:column headerText="Agência">
+									<h:outputText value="#{atendente.agencia.nome}" />
+								</p:column>
+
+								<p:column headerText="Cargo">
+									<h:outputText value="#{atendente.cargo.nome}" />
+								</p:column>
+
+								<p:column headerText="Contratado em">
+									<h:outputText value="#{atendente.dtaContratacao == null ? 'Em treinamento inicial' : atendente.dtaContratacao}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+								<p:column width="70px" style="text-align: center;">
+									<p:button outcome="/atendentes/CadastroAtendente"
+										icon="fa fa-pencil" title="Editar">
+										<f:param name="id" value="#{atendente.id}" />
+									</p:button>
+									<p:commandButton styleClass="RedButton RaisedButton"
+										icon="fa fa-trash" title="Excluir" process="@this"
+										update=":frmPesquisa:confirmacaoExclusaoDialog"
+										oncomplete="PF('confirmacaoExclusao').show()">
+										<f:setPropertyActionListener value="#{atendente}"
+											target="#{PesAtendenteMB.selecionado}" />
+									</p:commandButton>
+									<p:commandButton styleClass="OrangeButton RaisedButton"
+										icon="fa fa-wrench" title="Alterar cargo" process="@this"
+										update=":frmPesquisa:alterarCargoDialog"
+										oncomplete="PF('alterarCargo').show()">
+										<f:setPropertyActionListener value="#{atendente}"
+											target="#{PesAtendenteMB.selecionado}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+							<p:confirmDialog header="Exclusão de atendente"
+								message="Tem certeza que deseja excluir o atendente #{PesAtendenteMB.selecionado.nome}?"
+								widgetVar="confirmacaoExclusao" id="confirmacaoExclusaoDialog">
+								<p:button value="Não"
+									onclick="PF('confirmacaoExclusao').hide(); return false;" />
+								<p:commandButton value="Sim"
+									oncomplete="PF('confirmacaoExclusao').hide();"
+									action="#{PesAtendenteMB.excluir}" process="@this"
+									update=":frmPesquisa:atendenteTable" />
+							</p:confirmDialog>
+							<p:dialog header="Alterar cargo"
+								message="Informe o novo cargo de #{PesAtendenteMB.selecionado.nome}"
+								widgetVar="alterarCargo" id="alterarCargoDialog" modal="true">
+								<div class="Container100 Responsive100">
+									<p:panelGrid id="panelAlterarCargo" columns="2" layout="grid"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="ui-grid-col-4, ui-grid-col-8">
+										<p:outputLabel value="Cargo" for="cargoAlterado" />
+
+										<p:selectOneMenu id="cargoAlterado"
+											value="#{PesAtendenteMB.selecionado.cargo}" converter="cargoSelectItemsConverter">
+											<f:selectItem itemLabel="Selecione o cargo." noSelectionOption="true"/>
+											<f:selectItems value="#{PesAtendenteMB.listaCargos}" var="cargo"
+											itemLabel="#{cargo.nome}" itemValue="#{cargo}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+									<p:separator />
+									<h:panelGroup layout="div" style="margin-left: 30%;">
+										<p:button styleClass="OrangeButton" value="Não"
+											onclick="PF('alterarCargo').hide(); return false;" />
+										<p:commandButton styleClass="BlueButton" value="Sim"
+											oncomplete="PF('alterarCargo').hide();"
+											actionListener="#{alterarCargoBean.alterarCargo}"
+											update=":frmPesquisa:atendenteTable" />
+									</h:panelGroup>
+								</div>
+							</p:dialog>
+						</h:form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

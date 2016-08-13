@@ -1,0 +1,178 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div id="layout-menu-cover">
+	
+		<h:form>
+		
+			<ul id="menuform:j_idt23" class="layout-menu">
+				<!-- Dashboards -->
+				<li id="menuform:rm_dashboards" role="menuitem">
+					<h:link styleClass="menulink"> 
+						<i class="fa fa-dashboard"></i>	
+						<span>Dashboards</span>
+					</h:link>
+				</li>
+				
+				<!-- Posição do menu -->
+				<li id="menuform:rm_menupos" role="menuitem">
+					<h:link styleClass="menulink"> 
+						<i class="fa fa-stack-overflow"></i> 
+						<span>Posição do menu</span>
+					</h:link>
+					<ul role="menu">
+						<li id="menuform:rm_left" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').removeClass('PopupMenu');return false;">
+								<i class="fa fa-stack-exchange"></i> 
+								<span>Menu de linha</span>
+							</h:link>
+						</li>
+						
+						<li id="menuform:rm_popup" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').addClass('PopupMenu');return false;"> 
+								<i class="fa fa-list-alt"></i> 
+								<span>Menu popup</span>
+							</h:link>
+						</li>
+					</ul>
+				</li>
+				
+				<!-- Cores de fundo -->
+				<li id="menuform:rm_colors" role="menuitem">
+					<h:link	styleClass="menulink">
+						<i class="fa fa-paint-brush"></i> 
+						<span>Cores</span>
+					</h:link>
+					<ul role="menu">
+						<li id="menuform:rm_bg_blue" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').removeClass().addClass('BlueBody');return false;">
+								<i class="fa fa-tint"></i>
+								<span>Azul</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_bg_leaden" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').removeClass().addClass('LeadenBody');return false;">
+								<i class="fa fa-tint"></i>
+								<span>Chumbo</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_bg_red" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').removeClass().addClass('RedBody');return false;">
+								<i class="fa fa-tint"></i>
+								<span>Vermelho</span>
+							</h:link>						
+						</li>
+						<li id="menuform:rm_bg_green" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').removeClass().addClass('GreenBody');return false;">
+								<i class="fa fa-tint"></i>
+								<span>Verde</span>
+							</h:link>								
+						</li>
+						<li id="menuform:rm_bg_gray" role="menuitem">
+							<h:link styleClass="menulink" onclick="$('body').removeClass().addClass('DarkGrayBody');return false;">
+								<i class="fa fa-tint"></i>
+								<span>Cinza Escuro</span>
+							</h:link>									
+						</li>
+					</ul>
+				</li>
+				
+				<li id="menuform:rm_treina" role="menuitem">
+					<h:link	styleClass="menulink">
+						<i class="fa fa-graduation-cap"></i> 
+						<span>Gestão de treinamento</span>
+					</h:link>
+					<ul role="menu">
+						<li id="menuform:rm_atendente_gt" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/atendentes/PesquisaAtendente">
+								<i class="fa fa-users"></i>
+								<span>Atendentes</span>
+							</h:link>
+						</li>
+						<p:separator />
+						<li id="menuform:rm_treinamento_gt" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/treinamentos/PesquisaTreinamentos">
+								<i class="fa fa-university"></i>
+								<span>Treinamentos</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_lotacao_gt" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/lotacao/PesquisaLotacao">
+								<i class="fa fa-link"></i>
+								<span>Lotação</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_avaliacao_gt" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/avaliacoes/PesquisaAvaliacoes">
+								<i class="fa fa-check"></i>
+								<span>Avaliação</span>
+							</h:link>
+						</li>										
+					</ul>
+				</li>
+				
+				<!-- Configurações -->
+				<li id="menuform:rm_theme" role="menuitem">
+					<h:link	styleClass="menulink">
+						<i class="fa fa-cog"></i> 
+						<span>Configurações</span>
+					</h:link>
+					<ul role="menu">
+						<li id="menuform:rm_empresa" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/empresas/PesquisaEmpresa">
+								<i class="fa fa-table"></i>
+								<span>Empresas</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_regional" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/regionais/PesquisaRegional">
+								<i class="fa fa-table"></i>
+								<span>Regionais</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_agencia" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/agencias/PesquisaAgencia" >
+								<i class="fa fa-table"></i>
+								<span>Agências</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_atendente" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/atendentes/PesquisaAtendente">
+								<i class="fa fa-table"></i>
+								<span>Atendentes</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_treinamento" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/treinamentos/PesquisaTreinamentos">
+								<i class="fa fa-table"></i>
+								<span>Treinamentos</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_lotacao" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/lotacao/PesquisaLotacao">
+								<i class="fa fa-table"></i>
+								<span>Lotação</span>
+							</h:link>
+						</li>						
+						<li id="menuform:rm_avaliacao" role="menuitem">
+							<h:link	styleClass="menulink" outcome="/avaliacoes/PesquisaAvaliacoes" >
+								<i class="fa fa-table"></i>
+								<span>Avaliações</span>
+							</h:link>
+						</li>
+						<li id="menuform:rm_chamado" role="menuitem">
+							<h:link	styleClass="menulink">
+								<i class="fa fa-table"></i>
+								<span>Chamados</span>
+							</h:link>
+						</li>						
+					</ul>
+				</li>
+			</ul>
+			<script type="text/javascript">Volt.restoreMenuState();</script>
+		</h:form>
+	</div>
+
+</ui:composition>
